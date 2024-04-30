@@ -91,6 +91,23 @@ Raises:
 #GET Request Method
 @adminRouter.get("/admin/order-management", tags=["Admin APIs"])
 async def order_management(order_id: str, admin_id: str,  order_action: Literal["approve", "reject"]):
+    """
+    This asynchronous function manages the approval or rejection of orders by an admin through a GET request at the /admin/order-management endpoint. It interacts with MongoDB collections, specifically order_collection for order details and admin_collection for admin verification. The function ensures that both the order and the admin are valid before proceeding to update the order's approval status based on the specified action.
+
+Parameters:
+- order_id (str): The MongoDB _id of the order to be managed.
+- admin_id (str): The MongoDB _id of the admin performing the action.
+- order_action (Literal["approve", "reject"]): Specifies the action to be taken on the order. Can either be "approve" or "reject".
+
+Returns:
+- dict: A dictionary containing a message that reflects the completion of the requested action (either approval or rejection), including the admin's ID.
+
+Raises:
+- HTTPException: This function raises an HTTP exception with a 404 status code in the following scenarios:
+    - If the order with the specified order_id is not found.
+    - If no admin is registered under the provided admin_id.
+
+    """
     order = order_collection.find_one({"_id": ObjectId(order_id)})
     if order is None:
         raise HTTPException(status_code=404, detail="Order not found.")
@@ -122,6 +139,13 @@ async def order_management(order_id: str, admin_id: str,  order_action: Literal[
 from schemas.order_schema import list_serial
 @adminRouter.get("/admin/get-all-orders", tags=["Admin APIs"])
 async def get_all_orders():
+    """
+    This asynchronous function retrieves all orders from a MongoDB collection via a GET request at the /admin/get-all-orders endpoint. It utilizes a MongoDB query to fetch all entries from order_collection and serializes them using a custom serialization function list_serial from the schemas.order_schema module, which is expected to format the MongoDB documents into a JSON-compatible list format.
+
+
+Returns:
+- list: A list of serialized orders. The exact structure of the list will depend on the implementation of the list_serial function, which should adapt MongoDB documents to a format suitable for JSON responses.
+    """
     # Fetch all orders from MongoDB
     orders = order_collection.find()
     return list_serial(orders)

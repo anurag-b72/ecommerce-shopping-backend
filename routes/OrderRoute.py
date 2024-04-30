@@ -60,6 +60,19 @@ If there is no user matching the provided user_id in the user_collection (implic
 
 @orderRoute.get("/order/get-order/{order_id}", tags=["Shopping Order APIs"])
 async def get_order(order_id: str):
+    """
+    This asynchronous function retrieves the details of a specific order via a GET request at the /order/get-order/{order_id} endpoint. It checks for the order in the order_collection of a MongoDB database. If found, the order details are serialized using the individual_serial function, which is expected to format the MongoDB document into a JSON-friendly structure for API responses.
+
+Parameters:
+- order_id (str): The MongoDB _id of the order to be retrieved.
+
+Returns:
+- The serialized order data: This depends on the implementation of the individual_serial function, but typically includes detailed information about the order in a JSON format.
+
+Raises:
+- HTTPException: This function raises an HTTP exception with a 404 status code if no order is found with the specified order_id.
+
+    """
     # Find the order in MongoDB
     order = order_collection.find_one({"_id": ObjectId(order_id)})
     if order is None:
