@@ -40,18 +40,6 @@ async def add_items(user_id: str, product_id: str, quantity: int):
     
     return {"message": "Product added to user's shopping cart successfully"}
 
-@shoppingCartRouter.get("/user/cart/get-items", tags=["Cart APIs"])
-async def get_user_cart(user_id: str):
-    # Check if the user exists in the user_collection
-    user = user_collection.find_one({"_id": ObjectId(user_id)})
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    # Get the shopping cart items from the user document
-    shopping_cart = user.get("shopping_cart", [])
-    
-    return {"user_id": user_id, "shopping_cart": shopping_cart}
-
 @shoppingCartRouter.put("/user/cart/update-quantity", tags=["Cart APIs"])
 async def update_cart_item_quantity(user_id: str, product_id: str, new_quantity: int):
     # Check if the user exists in the user_collection
@@ -93,6 +81,18 @@ async def remove_cart_item(user_id: str, product_id: str):
     
     # If the product is not found in the cart, raise an error
     raise HTTPException(status_code=404, detail="Product not found in the user's shopping cart")
+
+@shoppingCartRouter.get("/user/cart/get-items", tags=["Cart APIs"])
+async def get_user_cart(user_id: str):
+    # Check if the user exists in the user_collection
+    user = user_collection.find_one({"_id": ObjectId(user_id)})
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get the shopping cart items from the user document
+    shopping_cart = user.get("shopping_cart", [])
+    
+    return {"user_id": user_id, "shopping_cart": shopping_cart}
 
 @shoppingCartRouter.get("/user/cart/total-price", tags=["Cart APIs"])
 async def calculate_total_price(user_id: str):

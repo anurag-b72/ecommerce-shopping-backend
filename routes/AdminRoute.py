@@ -116,8 +116,12 @@ async def order_management(order_id: str, admin_id: str,  order_action: Literal[
             }}
         )
         return {"message": "Order status rejected by admin id=" + admin_id}
-        
-    # if users:
-    #     return list_serial(users)
-    # else:
-    #     raise HTTPException(status_code=404, detail="No user registered in the system!")
+
+
+
+from schemas.order_schema import list_serial
+@adminRouter.get("/admin/get-all-orders", tags=["Admin APIs"])
+async def get_all_orders():
+    # Fetch all orders from MongoDB
+    orders = order_collection.find()
+    return list_serial(orders)

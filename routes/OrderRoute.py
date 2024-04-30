@@ -66,11 +66,3 @@ async def get_order(order_id: str):
         raise HTTPException(status_code=404, detail="Order not found")
     
     return individual_serial(order)
-
-
-
-@orderRoute.get("/order/get-all-orders", tags=["Shopping Order APIs"])
-async def get_all_orders():
-    # Fetch all orders from MongoDB
-    orders = order_collection.find()
-    return list_serial(orders)
